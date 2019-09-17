@@ -19,6 +19,8 @@ def fill_triangle_left(n):
         a+=1
         if wall_is_on_the_left():
             break
+            
+            
 def fill_triangle_right(n):
     a=0
     while True:
@@ -36,6 +38,8 @@ def fill_triangle_right(n):
         a+=1
         if wall_is_on_the_right():
             break
+            
+            
 def fill_triangle_up(n):
     a=0
     while True:
@@ -53,6 +57,8 @@ def fill_triangle_up(n):
         a+=1
         if wall_is_above():
             break
+            
+            
 def fill_triangle_down(n):
     a=0
     while True:

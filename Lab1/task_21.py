@@ -11,7 +11,6 @@ def task_4_11():
         for j in range(i):
             fill_cell()
             move_right()
-            pass
         move_left(n=i)
         move_down()
 
