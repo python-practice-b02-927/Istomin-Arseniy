@@ -1,7 +1,7 @@
 import graphics as gr
 
 window = gr.GraphWin("Model", 600, 600)
-g = 5000
+g = 10000
 time = 0.01
 def main():
     coords0 = gr.Point(50, 100)
@@ -24,11 +24,15 @@ def move_circle(coords0, velocity0):
 def change_velocity(circle, velocity):
     centre = circle.getCenter()
     radius = circle.getRadius()
-    if centre.x > 600-radius or centre.x < 0+radius:
+    collision = False
+    if centre.x > window.width-radius or centre.x <radius:
         velocity.x = -velocity.x
-    if centre.y < 0+radius or centre.y > 600-radius:
+        collision = True
+    if centre.y < radius or centre.y > window.height-radius:
         velocity.y = - velocity.y
-    velocity.y = velocity.y + g * time**2/2
+        collision = True
+    if not collision:
+        velocity.y = velocity.y + g * time**2/2
     #if abs(velocity.y)<
     #print(velocity.y)
     return velocity
