@@ -1,4 +1,5 @@
 import graphics as gr
+import random
 window = gr.GraphWin("Model", 600, 600)
 # global variables
 potential_well_depth = 0
@@ -12,10 +13,20 @@ def main():
     for i in range(zero_dist):
         particle = particle_init()
         particles.append(particle)
-
+    window.getMouse()
+    window.close()
 
 def particle_init():
-    pass
+    random.seed()
+    x = random.randint(10, 590)
+    y = random.randint(10, 590)
+    coords = gr.Point(x, y)
+    particle = gr.Circle(coords, 5)
+    particle.setFill('blue')
+
+
+
+
 
 def request_for_constant_parameters():
     global particles_amount, potential_well_depth, zero_dist
