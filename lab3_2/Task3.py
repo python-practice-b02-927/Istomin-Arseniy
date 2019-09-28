@@ -10,7 +10,7 @@ particles_amount = 0
 def main():
     request_for_constant_parameters()
     particles = []
-    for i in range(zero_dist):
+    for i in range(particles_amount):
         particle = particle_init()
         particles.append(particle)
     start_modelling(particles)
