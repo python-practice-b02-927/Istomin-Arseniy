@@ -13,8 +13,14 @@ def main():
     for i in range(zero_dist):
         particle = particle_init()
         particles.append(particle)
+    start_modelling(particles)
     window.getMouse()
     window.close()
+
+
+def start_modelling(particles):
+    pass
+
 
 def particle_init():
     random.seed()
