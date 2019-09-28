@@ -1,5 +1,11 @@
+#global variables
+potential_well_depth = 0
+zero_dist = 0
+particles_amount = 0
+
 def main():
     request_for_constant_parameters()
+
 
 
 def request_for_constant_parameters():
