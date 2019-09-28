@@ -10,17 +10,19 @@ particles_amount = 0
 def main():
     request_for_constant_parameters()
     particles = []
+    speeds = []
     for i in range(particles_amount):
         particle = particle_init()
         particles.append(particle)
-    start_modelling(particles)
+        speeds.append(gr.Point(0, 0))
+    start_modelling(particles, speeds)
     window.getMouse()
     window.close()
 
 
-def start_modelling(particles):
+def start_modelling(particles, speeds):
     draw_particles(particles)
-    move_particles(particles)
+    move_particles(particles, speeds)
 
 
 def draw_particles(particles):
@@ -28,8 +30,16 @@ def draw_particles(particles):
         particles[i].draw(window)
 
 
-def move_particles(particles):
+def move_particles(particles, speeds):
+    for i in range(particles_amount):
+        for j in range(particles_amount):
+            if i != j:
+                update_particles_speed(particles[i], particles[j], speeds[i])
+
+
+def update_particles_speed(particle1, particle2, speed):
     pass
+
 
 def particle_init():
     random.seed()
@@ -39,9 +49,6 @@ def particle_init():
     particle = gr.Circle(coords, 5)
     particle.setFill('blue')
     return particle
-
-
-
 
 
 def request_for_constant_parameters():
