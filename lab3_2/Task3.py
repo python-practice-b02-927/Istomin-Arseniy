@@ -1,3 +1,5 @@
+import graphics as gr
+window = gr.GraphWin("Model", 600, 600)
 # global variables
 potential_well_depth = 0
 zero_dist = 0
