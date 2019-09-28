@@ -19,6 +19,10 @@ def main():
 
 
 def start_modelling(particles):
+    draw_particles(particles)
+
+
+def draw_particles(particels):
     pass
 
 
