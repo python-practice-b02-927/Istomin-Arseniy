@@ -22,8 +22,9 @@ def start_modelling(particles):
     draw_particles(particles)
 
 
-def draw_particles(particels):
-    pass
+def draw_particles(particles):
+    for i in range(particles_amount):
+        particles[i].draw(window)
 
 
 def particle_init():
