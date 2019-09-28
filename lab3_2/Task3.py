@@ -29,6 +29,7 @@ def particle_init():
     coords = gr.Point(x, y)
     particle = gr.Circle(coords, 5)
     particle.setFill('blue')
+    return particle
 
 
 
