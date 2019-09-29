@@ -5,7 +5,8 @@ window = gr.GraphWin("Model", 600, 600)
 potential_well_depth = 0
 zero_dist = 0
 particles_amount = 0
-
+dt = 0.001
+mass = 1
 
 def main():
     request_for_constant_parameters()
@@ -34,10 +35,16 @@ def move_particles(particles, velocities):
     for i in range(particles_amount):
         for j in range(particles_amount):
             if i != j:
-                update_particles_velocity(particles[i], particles[j], velocities[i])
+                velocities[i] = update_particles_velocity(particles[i], particles[j], velocities[i])
 
 
 def update_particles_velocity(particle1, particle2, velocity):
+    velocity.x = force(particle1, particle2).x / mass * dt
+    velocity.y = force(particle1, particle2).y / mass * dt
+    return velocity
+
+
+def force(particle1, particel2):
     pass
 
 
@@ -52,11 +59,13 @@ def particle_init():
 
 
 def request_for_constant_parameters():
-    global particles_amount, potential_well_depth, zero_dist
+    global particles_amount, potential_well_depth, zero_dist, mass
     print("Enter potential well depth")
     potential_well_depth = int(input())
     print("Enter zero dist")
     zero_dist = int(input())
+    print("Enter mass")
+    mass = int(input())
     print("Enter particles amount")
     particles_amount = int(input())
 
