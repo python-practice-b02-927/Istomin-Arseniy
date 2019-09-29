@@ -7,7 +7,7 @@ window = gr.GraphWin("Model", 600, 600)
 potential_well_depth = 0
 zero_dist = 0
 particles_amount = 0
-dt = 0.001
+dt = 0.0002
 mass = 1
 
 def main():
@@ -45,8 +45,17 @@ def move_particles(particles, velocities):
 
 
 def update_particles_velocity(particle1, particle2, velocity):
-    velocity.x = velocity.x + force(particle1, particle2).x / mass * dt
-    velocity.y = velocity.y + force(particle1, particle2).y / mass * dt
+    center = particle1.getCenter()
+    flag = False
+    if center.x < 5 or center.x > 595:
+        flag = True
+        velocity.x = -velocity.x
+    if center.y < 5 or center.y > 595:
+        flag = True
+        velocity.y = -velocity.y
+    if not flag:
+        velocity.x = velocity.x + force(particle1, particle2).x / mass * dt
+        velocity.y = velocity.y + force(particle1, particle2).y / mass * dt
     return velocity
 
 
