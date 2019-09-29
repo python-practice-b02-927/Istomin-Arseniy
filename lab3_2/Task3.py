@@ -1,3 +1,5 @@
+from typing import Any, Union
+
 import graphics as gr
 import random
 window = gr.GraphWin("Model", 600, 600)
@@ -44,8 +46,14 @@ def update_particles_velocity(particle1, particle2, velocity):
     return velocity
 
 
-def force(particle1, particel2):
-    pass
+def force(particle1, particle2):
+    center1 = particle1.getCenter()
+    center2 = particle2.getCenter()
+    r = ((center1 - center2) ** 2 + (center1 - center2) ** 2)**0.5
+    x_dist = center2.x - center1.x
+    y_dist = center2.y - center1.y
+    force = 4 * potential_well_depth * (7 * zero_dist ** 6 / r ** 7 - 12 * zero_dist ** 12 / r ** 13)
+    return gr.Point(force * x_dist / r, force * y_dist / r)
 
 
 def particle_init():
@@ -62,7 +70,7 @@ def request_for_constant_parameters():
     global particles_amount, potential_well_depth, zero_dist, mass
     print("Enter potential well depth")
     potential_well_depth = int(input())
-    print("Enter zero dist")
+    print("Enter zero energy dist")
     zero_dist = int(input())
     print("Enter mass")
     mass = int(input())
