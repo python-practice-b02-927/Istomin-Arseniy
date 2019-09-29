@@ -7,7 +7,7 @@ window = gr.GraphWin("Model", 600, 600)
 potential_well_depth = 0
 zero_dist = 0
 particles_amount = 0
-dt = 0.0002
+dt = 0.001
 mass = 1
 
 def main():
@@ -47,12 +47,22 @@ def move_particles(particles, velocities):
 def update_particles_velocity(particle1, particle2, velocity):
     center = particle1.getCenter()
     flag = False
-    if center.x < 5 or center.x > 595:
-        flag = True
+    if center.x <= 5:
         velocity.x = -velocity.x
-    if center.y < 5 or center.y > 595:
+        particle1.move(7 - center.x, 0)
         flag = True
+    if center.x >= 595:
+        velocity.x = -velocity.x
+        particle1.move(593 - center.x, 0)
+        flag = True
+    if center.y <= 5:
         velocity.y = -velocity.y
+        particle1.move(0, 7 - center.y)
+        flag = True
+    if center.y >= 595:
+        velocity.y = -velocity.y
+        particle1.move(0, 593 - center.y)
+        flag = True
     if not flag:
         velocity.x = velocity.x + force(particle1, particle2).x / mass * dt
         velocity.y = velocity.y + force(particle1, particle2).y / mass * dt
@@ -63,8 +73,11 @@ def force(particle1, particle2):
     center1 = particle1.getCenter()
     center2 = particle2.getCenter()
     r = ((center1.x - center2.x) ** 2 + (center1.y - center2.y) ** 2)**0.5
+    r = max(1, r)
     x_dist = center2.x - center1.x
+    x_dist = max(x_dist, 1)
     y_dist = center2.y - center1.y
+    y_dist = max(y_dist, 1)
     force = 4 * potential_well_depth * (7 * zero_dist ** 6 / r ** 7 - 12 * zero_dist ** 12 / r ** 13)
     return gr.Point(force * x_dist / r, force * y_dist / r)
 
