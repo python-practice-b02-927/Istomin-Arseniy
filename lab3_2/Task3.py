@@ -10,19 +10,19 @@ particles_amount = 0
 def main():
     request_for_constant_parameters()
     particles = []
-    speeds = []
+    velocities = []
     for i in range(particles_amount):
         particle = particle_init()
         particles.append(particle)
-        speeds.append(gr.Point(0, 0))
-    start_modelling(particles, speeds)
+        velocities.append(gr.Point(0, 0))
+    start_modelling(particles, velocities)
     window.getMouse()
     window.close()
 
 
-def start_modelling(particles, speeds):
+def start_modelling(particles, velocities):
     draw_particles(particles)
-    move_particles(particles, speeds)
+    move_particles(particles, velocities)
 
 
 def draw_particles(particles):
@@ -30,14 +30,14 @@ def draw_particles(particles):
         particles[i].draw(window)
 
 
-def move_particles(particles, speeds):
+def move_particles(particles, velocities):
     for i in range(particles_amount):
         for j in range(particles_amount):
             if i != j:
-                update_particles_speed(particles[i], particles[j], speeds[i])
+                update_particles_velocity(particles[i], particles[j], velocities[i])
 
 
-def update_particles_speed(particle1, particle2, speed):
+def update_particles_velocity(particle1, particle2, velocity):
     pass
 
 
