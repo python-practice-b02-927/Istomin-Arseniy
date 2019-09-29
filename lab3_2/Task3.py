@@ -34,22 +34,26 @@ def draw_particles(particles):
 
 
 def move_particles(particles, velocities):
-    for i in range(particles_amount):
-        for j in range(particles_amount):
-            if i != j:
-                velocities[i] = update_particles_velocity(particles[i], particles[j], velocities[i])
+    for t in range(10000):
+        for i in range(particles_amount):
+            for j in range(particles_amount):
+                if i != j:
+                    velocities[i] = update_particles_velocity(particles[i], particles[j], velocities[i])
+        for i in range(particles_amount):
+            particles[i].move(velocities[i].x, velocities[i].y)
+            gr.time.sleep(dt)
 
 
 def update_particles_velocity(particle1, particle2, velocity):
-    velocity.x = force(particle1, particle2).x / mass * dt
-    velocity.y = force(particle1, particle2).y / mass * dt
+    velocity.x = velocity.x + force(particle1, particle2).x / mass * dt
+    velocity.y = velocity.y + force(particle1, particle2).y / mass * dt
     return velocity
 
 
 def force(particle1, particle2):
     center1 = particle1.getCenter()
     center2 = particle2.getCenter()
-    r = ((center1 - center2) ** 2 + (center1 - center2) ** 2)**0.5
+    r = ((center1.x - center2.x) ** 2 + (center1.y - center2.y) ** 2)**0.5
     x_dist = center2.x - center1.x
     y_dist = center2.y - center1.y
     force = 4 * potential_well_depth * (7 * zero_dist ** 6 / r ** 7 - 12 * zero_dist ** 12 / r ** 13)
@@ -69,11 +73,11 @@ def particle_init():
 def request_for_constant_parameters():
     global particles_amount, potential_well_depth, zero_dist, mass
     print("Enter potential well depth")
-    potential_well_depth = int(input())
+    potential_well_depth = float(input())
     print("Enter zero energy dist")
-    zero_dist = int(input())
+    zero_dist = float(input())
     print("Enter mass")
-    mass = int(input())
+    mass = float(input())
     print("Enter particles amount")
     particles_amount = int(input())
 
