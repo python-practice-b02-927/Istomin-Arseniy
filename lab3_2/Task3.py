@@ -73,12 +73,18 @@ def force(particle1, particle2):
     center1 = particle1.getCenter()
     center2 = particle2.getCenter()
     r = ((center1.x - center2.x) ** 2 + (center1.y - center2.y) ** 2)**0.5
-    r = max(1, r)
-    x_dist = center2.x - center1.x
-    x_dist = max(x_dist, 1)
-    y_dist = center2.y - center1.y
-    y_dist = max(y_dist, 1)
-    force = 4 * potential_well_depth * (7 * zero_dist ** 6 / r ** 7 - 12 * zero_dist ** 12 / r ** 13)
+    r = max(5, r)
+    x_dist = center1.x - center2.x
+    if x_dist >= 0:
+        x_dist = max(x_dist, 5)
+    else:
+        x_dist = min(x_dist, -5)
+    y_dist = center1.y - center2.y
+    if y_dist >= 0:
+        y_dist = max(y_dist, 5)
+    else:
+        y_dist = min(y_dist, -5)
+    force = 4 * potential_well_depth * (-7 * zero_dist ** 6 / r ** 7 + 12 * zero_dist ** 12 / r ** 13)
     return gr.Point(force * x_dist / r, force * y_dist / r)
 
 
