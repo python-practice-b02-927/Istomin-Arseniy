@@ -1,5 +1,3 @@
-from typing import Any, Union
-
 import graphics as gr
 import random
 window = gr.GraphWin("Model", 600, 600)
@@ -7,7 +5,7 @@ window = gr.GraphWin("Model", 600, 600)
 potential_well_depth = 0
 zero_dist = 0
 particles_amount = 0
-dt = 0.001
+dt = 0.0001
 mass = 1
 
 def main():
@@ -84,7 +82,9 @@ def force(particle1, particle2):
         y_dist = max(y_dist, 5)
     else:
         y_dist = min(y_dist, -5)
-    force = 4 * potential_well_depth * (-7 * zero_dist ** 6 / r ** 7 + 12 * zero_dist ** 12 / r ** 13)
+    max_force = 4 * potential_well_depth * (-7 * zero_dist ** 6 / (zero_dist / 1.2) ** 7 + 12 * zero_dist ** 12 / (zero_dist / 1.2) ** 13)
+    force = min(max_force, 4 * potential_well_depth * (-7 * zero_dist ** 6 / r ** 7 + 12 * zero_dist ** 12 / r ** 13))
+    print(max_force)
     return gr.Point(force * x_dist / r, force * y_dist / r)
 
 
