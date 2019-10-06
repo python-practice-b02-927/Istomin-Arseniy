@@ -84,7 +84,6 @@ def force(particle1, particle2):
         y_dist = min(y_dist, -5)
     max_force = 4 * potential_well_depth * (-7 * zero_dist ** 6 / (zero_dist / 1.2) ** 7 + 12 * zero_dist ** 12 / (zero_dist / 1.2) ** 13)
     force = min(max_force, 4 * potential_well_depth * (-7 * zero_dist ** 6 / r ** 7 + 12 * zero_dist ** 12 / r ** 13))
-    print(max_force)
     return gr.Point(force * x_dist / r, force * y_dist / r)
 
 
@@ -100,14 +99,10 @@ def particle_init():
 
 def request_for_constant_parameters():
     global particles_amount, potential_well_depth, zero_dist, mass
-    print("Enter potential well depth")
-    potential_well_depth = float(input())
-    print("Enter zero energy dist")
-    zero_dist = float(input())
-    print("Enter mass")
-    mass = float(input())
-    print("Enter particles amount")
-    particles_amount = int(input())
+    potential_well_depth = float(input("Enter potential well depth: ") or "500")
+    zero_dist = float(input("Enter zero energy dist: ") or "100")
+    mass = float(input("Enter mass: ") or "0.1")
+    particles_amount = int(input("Enter particles_amount: ") or "5")
 
 
 main()
