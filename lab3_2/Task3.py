@@ -5,7 +5,7 @@ window = gr.GraphWin("Model", 600, 600)
 potential_well_depth = 0
 zero_dist = 0
 particles_amount = 0
-dt = 0.0001
+dt = 0.005
 mass = 1
 
 def main():
@@ -99,10 +99,10 @@ def particle_init():
 
 def request_for_constant_parameters():
     global particles_amount, potential_well_depth, zero_dist, mass
-    potential_well_depth = float(input("Enter potential well depth: ") or "500")
-    zero_dist = float(input("Enter zero energy dist: ") or "100")
-    mass = float(input("Enter mass: ") or "0.1")
-    particles_amount = int(input("Enter particles_amount: ") or "5")
+    potential_well_depth = float(input("Enter potential well depth: ") or "100")
+    zero_dist = float(input("Enter zero energy dist: ") or "70")
+    mass = float(input("Enter mass: ") or "0.08")
+    particles_amount = int(input("Enter particles_amount: ") or "7")
 
 
 main()
