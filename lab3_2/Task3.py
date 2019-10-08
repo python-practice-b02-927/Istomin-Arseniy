@@ -4,7 +4,7 @@ window = gr.GraphWin("Model", 600, 600)
 # global variables
 potential_well_depth = 0
 zero_dist = 0
-particles_amount = 0
+particles_number = 0
 dt = 0.005
 mass = 1
 
@@ -12,7 +12,7 @@ def main():
     request_for_constant_parameters()
     particles = []
     velocities = []
-    for i in range(particles_amount):
+    for i in range(particles_number):
         particle = particle_init()
         particles.append(particle)
         velocities.append(gr.Point(0, 0))
@@ -27,17 +27,17 @@ def start_modelling(particles, velocities):
 
 
 def draw_particles(particles):
-    for i in range(particles_amount):
+    for i in range(particles_number):
         particles[i].draw(window)
 
 
 def move_particles(particles, velocities):
     for t in range(10000):
-        for i in range(particles_amount):
-            for j in range(particles_amount):
+        for i in range(particles_number):
+            for j in range(particles_number):
                 if i != j:
                     velocities[i] = update_particles_velocity(particles[i], particles[j], velocities[i])
-        for i in range(particles_amount):
+        for i in range(particles_number):
             particles[i].move(velocities[i].x, velocities[i].y)
             gr.time.sleep(dt)
 
@@ -98,11 +98,11 @@ def particle_init():
 
 
 def request_for_constant_parameters():
-    global particles_amount, potential_well_depth, zero_dist, mass
+    global particles_number, potential_well_depth, zero_dist, mass
     potential_well_depth = float(input("Enter potential well depth: ") or "100")
-    zero_dist = float(input("Enter zero energy dist: ") or "70")
-    mass = float(input("Enter mass: ") or "0.08")
-    particles_amount = int(input("Enter particles_amount: ") or "7")
+    zero_dist = float(input("Enter zero energy dist: ") or "80")
+    mass = float(input("Enter mass: ") or "1")
+    particles_number = int(input("Enter particles_number: ") or "7")
 
 
 main()
