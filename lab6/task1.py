@@ -17,4 +17,7 @@ e.pack()
 b.pack()
 l.pack()
 b.bind('<Button-1>', strToSortlist)
+for i in range(6, -1, -1):
+    print(i)
+
 mainloop()

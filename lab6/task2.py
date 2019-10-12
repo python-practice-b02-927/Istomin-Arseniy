@@ -15,44 +15,81 @@ l = Label(root, bg='black', fg='white', width=20)
 ball = []
 score = 0
 
-flag = True
-time = 2000
-def new_ball():
-    global flag, score, time, x, y, r
-    canv.delete(ALL)
-    x = rnd(100, 700)
-    y = rnd(100, 500)
-    r = rnd(30, 50)
-    canv.create_oval(x - r, y - r, x + r, y + r, fill=choice(colors), width=0)
-    if flag:
-        time = 500 + int(1500 / (0.1 * score + 1))
-        root.after(time, new_ball)
-    else:
-        l['text'] = 'Failed with score:' + str(score)
-        canv.delete(ALL)
-    flag = False
+game = True
+time = 1000
+bonus = []
 
+
+def new_ball():
+    global score, time, ball, game, bonus
+    del_bonus(bonus)
+    cur_ball = {}
+    cur_ball['x'] = rnd(100, 700)
+    cur_ball['y'] = rnd(100, 500)
+    cur_ball['r'] = rnd(30, 50)
+    cur_ball['flag'] = False
+    # flag is False when ball hasn't been clicked and True when ball has been clicked
+    x = cur_ball['x']
+    y = cur_ball['y']
+    r = cur_ball['r']
+    ball_id = canv.create_oval(x - r, y - r, x + r, y + r, fill=choice(colors), width=0)
+    cur_ball['id'] = ball_id
+    cur_ball['bonus'] = 0
+    ball.append(cur_ball)
+    if game:
+        root.after(time, new_ball)
+
+
+def del_bonus(bonus):
+    while len(bonus) > 0:
+        canv.delete(bonus[len(bonus) - 1])
+        bonus.pop(len(bonus) - 1)
+
+
+def move_ball(ball):
+    pass
 
 def click(event):
-    global score, flag
+    global score, game, ball, bonus
     mouse_x = event.x
     mouse_y = event.y
-    if ((x - mouse_x)**2 + (y - mouse_y)**2 <= r**2) and flag == False:
-        if (x - mouse_x)**2 + (y - mouse_y)**2 <= (0.1 * r)**2:
-            score += 5
-            canv.create_text(x, y, text="x5", justify=CENTER, font="Verdana 30", fill='red')
-        elif (x - mouse_x)**2 + (y - mouse_y)**2 <= (0.2 * r)**2:
-            score += 2
-            canv.create_text(x, y, text="x2", justify=CENTER, font="Verdana 30", fill='red')
-        else:
-            score += 1
-        l['text'] = str(score)
-        flag = True
+    length = len(ball)
+    catch = False
+    for i in range(length - 1, -1, -1):
+        x = ball[i]['x']
+        y = ball[i]['y']
+        r = ball[i]['r']
+        if ((x - mouse_x) ** 2 + (y - mouse_y) ** 2 <= r ** 2) and not ball[i]['flag']:
+            catch = True
+            if (x - mouse_x) ** 2 + (y - mouse_y) ** 2 <= (0.1 * r) ** 2:
+                score += 5
+                bonus_id = canv.create_text(x, y, text="x5", justify=CENTER, font="Verdana 30", fill='red')
+                bonus.append(bonus_id)
+            elif (x - mouse_x) ** 2 + (y - mouse_y) ** 2 <= (0.2 * r) ** 2:
+                score += 2
+                bonus_id = canv.create_text(x, y, text="x2", justify=CENTER, font="Verdana 30", fill='red')
+                bonus.append(bonus_id)
+            else:
+                score += 1
+            l['text'] = str(score)
+            ball[i]['flag'] = True
+            canv.delete(ball[i]['id'])
+            ball.pop(i)
+    if not catch:
+        end_game()
+
+
+
+
+def end_game():
+    global game
+    l['text'] = 'Failed with score:' + str(score)
+    canv.delete(ALL)
+    game = False
 
 
 l.pack()
 new_ball()
-
 
 canv.bind('<Button-1>', click)
 mainloop()
