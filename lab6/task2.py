@@ -14,11 +14,10 @@ colors = ['orange', 'yellow', 'green', 'blue']
 l = Label(root, bg='black', fg='white', width=20)
 ball = []
 score = 0
-
 game = True
 time = 1000
 bonus = []
-
+dt = 100
 
 def new_ball():
     global score, time, ball, game, bonus
@@ -28,6 +27,8 @@ def new_ball():
     cur_ball['y'] = rnd(100, 500)
     cur_ball['r'] = rnd(30, 50)
     cur_ball['flag'] = False
+    cur_ball['vx'] = rnd(-5, 5)
+    cur_ball['vy'] = rnd(-5, 5)
     # flag is False when ball hasn't been clicked and True when ball has been clicked
     x = cur_ball['x']
     y = cur_ball['y']
@@ -38,6 +39,8 @@ def new_ball():
     ball.append(cur_ball)
     if game:
         root.after(time, new_ball)
+    else:
+        canv.delete(ALL)
 
 
 def del_bonus(bonus):
@@ -46,8 +49,18 @@ def del_bonus(bonus):
         bonus.pop(len(bonus) - 1)
 
 
-def move_ball(ball):
+def collision():
     pass
+
+
+def move_ball():
+    global ball
+    for i in range(len(ball)):
+        collision()
+        ball[i]['x'] += ball[i]['vx']
+        ball[i]['y'] += ball[i]['vy']
+        canv.move(ball[i]['id'], ball[i]['vx'], ball[i]['vy'])
+    root.after(dt, move_ball)
 
 def click(event):
     global score, game, ball, bonus
@@ -90,6 +103,6 @@ def end_game():
 
 l.pack()
 new_ball()
-
+move_ball()
 canv.bind('<Button-1>', click)
 mainloop()
