@@ -12,10 +12,13 @@ canv.pack(fill=BOTH, expand=1)
 colors = ['orange', 'yellow', 'green', 'blue']
 
 score_label = Label(root, bg='black', fg='white', width=20)
+start_button = Button(root, text="Start", height=3, width=10)
+restart_button = Button(root, text="Restart", bg='black', height=3, width=10)
+leaderboard_button = Button(root, text="Leaderboard", bg='black', height=3, width=10)
 ball = []
 score = 0
 game = True
-time = 1000
+time = 5000
 bonus = []
 dt = 50
 def new_ball():
@@ -130,13 +133,23 @@ def end_game():
     game = False
 
 
-def start_game():
-    pass
+def start_game(event):
+    global game, ball
+    game = True
+    ball.clear()
+    canv.delete(ALL)
+    score_label['text'] = ''
+    start_button.destroy()
+    score_label.pack()
+    new_ball()
+    new_hard_ball()
+    move_ball()
+    canv.bind('<Button-1>', click)
 
 
-l.pack()
-new_ball()
-new_hard_ball()
-move_ball()
-canv.bind('<Button-1>', click)
+start_button.bind('<Button-1>', start_game)
+restart_button.pack(anchor=CENTER)
+restart_button.bind('<Button-1>', start_game)
+start_button.pack()
+leaderboard_button.pack(anchor=SW)
 mainloop()

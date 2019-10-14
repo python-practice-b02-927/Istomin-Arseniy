@@ -1,14 +1,20 @@
 from tkinter import *
 
 root = Tk()
-c = Canvas(width=300, height=300, bg='white')
-c.focus_set()
-c.pack()
 
-ball = c.create_oval(140, 140, 160, 160, fill='green')
-c.bind('<Up>', lambda event: c.move(ball, 0, -2))
-c.bind('<Down>', lambda event: c.move(ball, 0, 2))
-c.bind('<Left>', lambda event: c.move(ball, -2, 0))
-c.bind('<Right>', lambda event: c.move(ball, 2, 0))
+e = Entry(width=20)
+b = Button(text="Преобразовать", bg='red')
+l = Label(bg='black', fg='white', width=20)
 
+def strToSortlist(event):
+    s = e.get()
+    s = s.split()
+    s.sort()
+    l['text'] = ' '.join(s)
+
+b.bind('<Button-1>', strToSortlist)
+
+e.pack()
+b.pack()
+l.pack()
 root.mainloop()
