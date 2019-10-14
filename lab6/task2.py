@@ -11,14 +11,13 @@ canv.pack(fill=BOTH, expand=1)
 
 colors = ['orange', 'yellow', 'green', 'blue']
 
-l = Label(root, bg='black', fg='white', width=20)
+score_label = Label(root, bg='black', fg='white', width=20)
 ball = []
 score = 0
 game = True
 time = 1000
 bonus = []
-dt = 100
-
+dt = 50
 def new_ball():
     global score, time, ball, game, bonus
     del_bonus(bonus)
@@ -27,8 +26,8 @@ def new_ball():
     cur_ball['y'] = rnd(100, 500)
     cur_ball['r'] = rnd(30, 50)
     cur_ball['flag'] = False
-    cur_ball['vx'] = rnd(-5, 5)
-    cur_ball['vy'] = rnd(-5, 5)
+    cur_ball['vx'] = rnd(-3, 3)
+    cur_ball['vy'] = rnd(-3, 3)
     # flag is False when ball hasn't been clicked and True when ball has been clicked
     x = cur_ball['x']
     y = cur_ball['y']
@@ -43,20 +42,52 @@ def new_ball():
         canv.delete(ALL)
 
 
+def new_hard_ball():
+    global score, time, ball, game, bonus
+    del_bonus(bonus)
+    cur_ball = {}
+    cur_ball['x'] = rnd(100, 700)
+    cur_ball['y'] = rnd(100, 500)
+    cur_ball['r'] = rnd(30, 50)
+    cur_ball['flag'] = False
+    if rnd(0, 1) > 0.5:
+        cur_ball['vx'] = rnd(10, 15)
+    else:
+        cur_ball['vx'] = rnd(-15, -10)
+    if rnd(0, 1) > 0.5:
+        cur_ball['vy'] = rnd(10, 15)
+    else:
+        cur_ball['vy'] = rnd(-15, -10)
+    # flag is False when ball hasn't been clicked and True when ball has been clicked
+    x = cur_ball['x']
+    y = cur_ball['y']
+    r = cur_ball['r']
+    ball_id = canv.create_oval(x - r, y - r, x + r, y + r, fill='red', width=0)
+    cur_ball['id'] = ball_id
+    cur_ball['bonus'] = 0
+    ball.append(cur_ball)
+    if game:
+        root.after(rnd(4000, 10000), new_hard_ball)
+    else:
+        canv.delete(ALL)
+
 def del_bonus(bonus):
     while len(bonus) > 0:
         canv.delete(bonus[len(bonus) - 1])
         bonus.pop(len(bonus) - 1)
 
 
-def collision():
-    pass
+def collision(i):
+    if ball[i]['x'] < ball[i]['r'] or ball[i]['x'] > 800-ball[i]['r']:
+        ball[i]['vx'] = -ball[i]['vx']
+    if ball[i]['y'] < ball[i]['r'] or ball[i]['y'] > 600-ball[i]['r']:
+        ball[i]['vy'] = -ball[i]['vy']
 
 
 def move_ball():
     global ball
     for i in range(len(ball)):
-        collision()
+        collision(i)
         ball[i]['x'] += ball[i]['vx']
         ball[i]['y'] += ball[i]['vy']
         canv.move(ball[i]['id'], ball[i]['vx'], ball[i]['vy'])
@@ -84,7 +115,7 @@ def click(event):
                 bonus.append(bonus_id)
             else:
                 score += 1
-            l['text'] = str(score)
+            score_label['text'] = str(score)
             ball[i]['flag'] = True
             canv.delete(ball[i]['id'])
             ball.pop(i)
@@ -92,17 +123,20 @@ def click(event):
         end_game()
 
 
-
-
 def end_game():
     global game
-    l['text'] = 'Failed with score:' + str(score)
+    score_label['text'] = 'Failed with score:' + str(score)
     canv.delete(ALL)
     game = False
 
 
+def start_game():
+    pass
+
+
 l.pack()
 new_ball()
+new_hard_ball()
 move_ball()
 canv.bind('<Button-1>', click)
 mainloop()
