@@ -16,9 +16,10 @@ start_button = Button(root, text="Start", height=3, width=10)
 restart_button = Button(root, text="Restart", bg='black', height=3, width=10)
 leaderboard_button = Button(root, text="Leaderboard", bg='black', height=3, width=10)
 ball = []
+leaders = []
 score = 0
 game = True
-time = 5000
+time = 1000
 bonus = []
 dt = 50
 def new_ball():
@@ -69,8 +70,9 @@ def new_hard_ball():
     cur_ball['id'] = ball_id
     cur_ball['bonus'] = 0
     ball.append(cur_ball)
+    hard_time = rnd(4000, 10000)
     if game:
-        root.after(rnd(4000, 10000), new_hard_ball)
+        root.after(hard_time, new_hard_ball)
     else:
         canv.delete(ALL)
 
@@ -88,13 +90,14 @@ def collision(i):
 
 
 def move_ball():
-    global ball
+    global ball, game
     for i in range(len(ball)):
         collision(i)
         ball[i]['x'] += ball[i]['vx']
         ball[i]['y'] += ball[i]['vy']
         canv.move(ball[i]['id'], ball[i]['vx'], ball[i]['vy'])
-    root.after(dt, move_ball)
+    if game:
+        root.after(dt, move_ball)
 
 def click(event):
     global score, game, ball, bonus
@@ -118,7 +121,7 @@ def click(event):
                 bonus.append(bonus_id)
             else:
                 score += 1
-            score_label['text'] = str(score)
+            score_label['text'] = str(score)+' '
             ball[i]['flag'] = True
             canv.delete(ball[i]['id'])
             ball.pop(i)
@@ -127,15 +130,27 @@ def click(event):
 
 
 def end_game():
-    global game
+    global game, leaders
     score_label['text'] = 'Failed with score:' + str(score)
     canv.delete(ALL)
     game = False
+    leader_file = open('leaderboard.txt', 'a')
+    leader_file.write(' '+str(score))
+    leader_file.close()
+    leader_file = open('leaderboard.txt', 'r')
+    leaders = (leader_file.read()).split()
+    leaders.sort(reverse=True)
+    leaders = leaders[:10]
+   # leaders_str = ' '.join(leaders)
+    #leader_file.write(leaders_str)
+    leader_file.close()
+
 
 
 def start_game(event):
-    global game, ball
+    global game, ball, score
     game = True
+    score = 0
     ball.clear()
     canv.delete(ALL)
     score_label['text'] = ''
@@ -147,9 +162,16 @@ def start_game(event):
     canv.bind('<Button-1>', click)
 
 
+def leaderboard(event):
+    print(leaders)
+
+
 start_button.bind('<Button-1>', start_game)
 restart_button.pack(anchor=CENTER)
 restart_button.bind('<Button-1>', start_game)
 start_button.pack()
+leaderboard_button.bind('<Button-1>', leaderboard)
 leaderboard_button.pack(anchor=SW)
+
+
 mainloop()
