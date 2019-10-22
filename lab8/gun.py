@@ -34,7 +34,7 @@ class Ball:
             self.y + self.r,
             fill=self.color
         )
-        self.live = 30
+        self.live = 100
 
     def set_coords(self):
         canv.coords(
@@ -55,7 +55,9 @@ class Ball:
         # FIXME
         self.x += self.vx
         self.y -= self.vy
-        canv.move(self.id, self.vx, -self.vy)
+        self.set_coords()
+        self.live -= 1
+        print(self.live)
 
     def hittest(self, obj):
         """Функция проверяет сталкивалкивается ли данный обьект с целью, описываемой в обьекте obj.
@@ -151,13 +153,16 @@ balls = []
 
 def new_game():
     global screen1, balls, bullet
+    bullet = 0
+    balls = []
     t1 = Target()
     canv.bind('<Button-1>', g1.fire2_start)
     canv.bind('<ButtonRelease-1>', g1.fire2_end)
     canv.bind('<Motion>', g1.targeting)
     t1.live = 1
     while t1.live or balls:
-        for b in balls:
+        to_del = []
+        for i, b in enumerate(balls):
             b.move()
             if b.hittest(t1) and t1.live:
                 t1.live = 0
@@ -165,6 +170,12 @@ def new_game():
                 canv.bind('<Button-1>', '')
                 canv.bind('<ButtonRelease-1>', '')
                 canv.itemconfig(screen1, text='Вы уничтожили цель за ' + str(bullet) + ' выстрелов')
+            if b.live < 0:
+                to_del.append(i)
+                canv.delete(b.id)
+        for i in range(len(to_del)-1, -1, -1):
+            del balls[to_del[i]]
+
         canv.update()
         time.sleep(0.03)
         g1.targeting()
