@@ -12,10 +12,10 @@ canv = tk.Canvas(root, bg='white')
 canv.pack(fill=tk.BOTH, expand=1)
 g = 1
 k = 0.5
-y = 0.9
+u = 0.9
 
 
-# k, y - коэффициенты трения
+# k, u - коэффициенты трения
 
 class Ball:
     def __init__(self, x=40, y=450):
@@ -39,6 +39,7 @@ class Ball:
             fill=self.color
         )
         self.live = 20
+        self.in_air = True
 
     def set_coords(self):
         canv.coords(
@@ -57,32 +58,39 @@ class Ball:
         и стен по краям окна (размер окна 800х600).
         """
         # FIXME
+        print(self.live)
+        if self.vy < 5 and self.y >= 600 - self.r:
+            self.in_air = False
         self.collision()
         self.x += self.vx
-        self.y += self.vy
-        if self.y > self.r:
+        if self.in_air:
+            self.y += self.vy
             self.vy += g
+        else:
+            self.vx *= u
+            self.live -= 1
         self.set_coords()
+
 
     def collision(self):
         if self.x > 800 - self.r:
             self.vx = -self.vx * k
-            self.vy *= y
+            self.vy *= u
             self.x = 800 - self.r
             self.live -= 1
         if self.x < self.r:
             self.vx = -self.vx * k
-            self.vy *= y
+            self.vy *= u
             self.x = self.r
             self.live -= 1
         if self.y > 600 - self.r:
             self.vy = -self.vy * k
-            self.vx *= y
+            self.vx *= u
             self.y = 600 - self.r
             self.live -= 1
         if self.y < self.r:
             self.vy = -self.vy * k
-            self.vx *= y
+            self.vx *= u
             self.y = self.r
             self.live -= 1
 
