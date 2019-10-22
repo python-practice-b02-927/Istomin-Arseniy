@@ -10,8 +10,12 @@ fr = tk.Frame(root)
 root.geometry('800x600')
 canv = tk.Canvas(root, bg='white')
 canv.pack(fill=tk.BOTH, expand=1)
-g = 10
+g = 1
+k = 0.5
+y = 0.9
 
+
+# k, y - коэффициенты трения
 
 class Ball:
     def __init__(self, x=40, y=450):
@@ -34,7 +38,7 @@ class Ball:
             self.y + self.r,
             fill=self.color
         )
-        self.live = 100
+        self.live = 20
 
     def set_coords(self):
         canv.coords(
@@ -53,11 +57,34 @@ class Ball:
         и стен по краям окна (размер окна 800х600).
         """
         # FIXME
+        self.collision()
         self.x += self.vx
-        self.y -= self.vy
+        self.y += self.vy
+        if self.y > self.r:
+            self.vy += g
         self.set_coords()
-        self.live -= 1
-        print(self.live)
+
+    def collision(self):
+        if self.x > 800 - self.r:
+            self.vx = -self.vx * k
+            self.vy *= y
+            self.x = 800 - self.r
+            self.live -= 1
+        if self.x < self.r:
+            self.vx = -self.vx * k
+            self.vy *= y
+            self.x = self.r
+            self.live -= 1
+        if self.y > 600 - self.r:
+            self.vy = -self.vy * k
+            self.vx *= y
+            self.y = 600 - self.r
+            self.live -= 1
+        if self.y < self.r:
+            self.vy = -self.vy * k
+            self.vx *= y
+            self.y = self.r
+            self.live -= 1
 
     def hittest(self, obj):
         """Функция проверяет сталкивалкивается ли данный обьект с целью, описываемой в обьекте obj.
@@ -95,7 +122,7 @@ class Gun:
         new_ball.r += 5
         self.angle = math.atan((event.y - new_ball.y) / (event.x - new_ball.x))
         new_ball.vx = self.f2_power * math.cos(self.angle)
-        new_ball.vy = - self.f2_power * math.sin(self.angle)
+        new_ball.vy = self.f2_power * math.sin(self.angle)
         balls += [new_ball]
         self.f2_on = 0
         self.f2_power = 10
@@ -124,11 +151,11 @@ class Gun:
 
 class Target:
     def __init__(self):
-        y = self.y = rnd(300, 550)
         self.points = 0
         self.live = 1
         self.id = canv.create_oval(0, 0, 0, 0)
         self.id_points = canv.create_text(30, 30, text=self.points, font='28')
+        y = self.y = rnd(300, 550)
         x = self.x = rnd(600, 780)
         r = self.r = rnd(2, 50)
         color = self.color = 'red'
@@ -136,7 +163,16 @@ class Target:
         canv.itemconfig(self.id, fill=color)
 
     def new_target(self):
-        """ Инициализация новой цели. """
+        y = rnd(300, 550)
+        x = rnd(600, 780)
+        r = rnd(2, 50)
+        color = 'red'
+        self.x = x
+        self.y = y
+        self.r = r
+        self.color = color
+        canv.coords(self.id, x - r, y - r, x + r, y + r)
+        canv.itemconfig(self.id, fill=color)
 
     def hit(self, points=1):
         """Попадание шарика в цель."""
@@ -149,13 +185,13 @@ screen1 = canv.create_text(400, 300, text='', font='28')
 g1 = Gun()
 bullet = 0
 balls = []
-
+t1 = Target()
 
 def new_game():
     global screen1, balls, bullet
     bullet = 0
     balls = []
-    t1 = Target()
+    t1.new_target()
     canv.bind('<Button-1>', g1.fire2_start)
     canv.bind('<ButtonRelease-1>', g1.fire2_end)
     canv.bind('<Motion>', g1.targeting)
@@ -173,13 +209,14 @@ def new_game():
             if b.live < 0:
                 to_del.append(i)
                 canv.delete(b.id)
-        for i in range(len(to_del)-1, -1, -1):
+        for i in range(len(to_del) - 1, -1, -1):
             del balls[to_del[i]]
 
         canv.update()
         time.sleep(0.03)
         g1.targeting()
         g1.power_up()
+
     canv.itemconfig(screen1, text='')
     canv.delete(g1)
     root.after(750, new_game)
