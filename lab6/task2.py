@@ -134,15 +134,17 @@ def end_game():
     score_label['text'] = 'Failed with score:' + str(score)
     canv.delete(ALL)
     game = False
-    leader_file = open('leaderboard.txt', 'a')
+    leader_file = open('leaderboard.txt', 'r')
     leader_file.write(' '+str(score))
     leader_file.close()
-    leader_file = open('leaderboard.txt', 'r')
+    leader_file = open('leaderboard.txt', 'w')
     leaders = (leader_file.read()).split()
     leaders.sort(reverse=True)
     leaders = leaders[:10]
-   # leaders_str = ' '.join(leaders)
-    #leader_file.write(leaders_str)
+    leaders_str = ''
+    for i in leaders:
+        leaders_str = i + " "
+    leader_file.write(leaders_str)
     leader_file.close()
 
 
