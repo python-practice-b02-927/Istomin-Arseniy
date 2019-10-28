@@ -1,4 +1,4 @@
-from random import randrange as rnd, choice
+from random import randrange as rnd, choice, uniform
 import tkinter as tk
 import math
 import time
@@ -12,7 +12,7 @@ canv.pack(fill=tk.BOTH, expand=1)
 g = 1.5
 k = 0.5
 u = 0.9
-target_number = 3
+target_number = 2
 # k, u - коэффициенты трения
 
 class Ball:
@@ -156,6 +156,8 @@ class Gun:
 class Target:
     def __init__(self):
         self.points = 0
+        self.vx = 0
+        self.vy = rnd(-1, 1)
         self.live = 1
         self.id = canv.create_oval(0, 0, 0, 0)
         y = self.y = rnd(300, 550)
@@ -166,7 +168,15 @@ class Target:
         canv.itemconfig(self.id, fill=color)
 
     def move(self):
-        pass
+        self.y += self.vy
+        canv.move(self.id, self.vx, self.vy)
+        if self.y < 50 + self.r:
+            self.y = 51 + self.r
+            self.vy = -self.vy
+        elif self.y > 550 - self.r:
+            self.y = 549 + self.r
+            self.vy = -self.vy
+
 
     def hit(self, points=1):
         """Попадание шарика в цель."""
@@ -206,6 +216,8 @@ def new_game():
 
     while targets_lives or balls:
         to_del = []
+        for j in range(target_number):
+            targets[j].move()
         for i, b in enumerate(balls):
             b.move()
             for j in range(target_number):
