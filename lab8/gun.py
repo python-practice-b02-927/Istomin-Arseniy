@@ -2,7 +2,6 @@ from random import randrange as rnd, choice
 import tkinter as tk
 import math
 import time
-
 # print (dir(math))
 
 root = tk.Tk()
@@ -13,8 +12,7 @@ canv.pack(fill=tk.BOTH, expand=1)
 g = 1.5
 k = 0.5
 u = 0.9
-score = 0
-
+target_number = 3
 # k, u - коэффициенты трения
 
 class Ball:
@@ -57,7 +55,6 @@ class Ball:
         self.x и self.y с учетом скоростей self.vx и self.vy, силы гравитации, действующей на мяч,
         и стен по краям окна (размер окна 800х600).
         """
-        print(self.live)
         if self.vy < 5 and self.y >= 600 - self.r:
             self.in_air = False
         self.collision()
@@ -161,7 +158,6 @@ class Target:
         self.points = 0
         self.live = 1
         self.id = canv.create_oval(0, 0, 0, 0)
-        self.id_points = canv.create_text(30, 30, text=self.points, font='28')
         y = self.y = rnd(300, 550)
         x = self.x = rnd(600, 780)
         r = self.r = rnd(2, 50)
@@ -169,68 +165,69 @@ class Target:
         canv.coords(self.id, x - r, y - r, x + r, y + r)
         canv.itemconfig(self.id, fill=color)
 
-    def new_target(self):
-        y = rnd(300, 550)
-        x = rnd(600, 780)
-        r = rnd(2, 50)
-        color = 'red'
-        self.x = x
-        self.y = y
-        self.r = r
-        self.color = color
-        canv.coords(self.id, x - r, y - r, x + r, y + r)
-        canv.itemconfig(self.id, fill=color)
+    def move(self):
+        pass
 
     def hit(self, points=1):
         """Попадание шарика в цель."""
         canv.coords(self.id, -10, -10, -10, -10)
-        self.points += points
-        canv.itemconfig(self.id_points, text=self.points)
 
 
 class Scoreboard:
-    def update_score(target, point=1):
-        pass
+    def __init__(self):
+        self.score = 0
+        self.id_points = canv.create_text(30, 30, text=self.score, font='28')
+    def update_score(self, point=1):
+        self.score += point
+        canv.itemconfig(self.id_points, text=self.score)
 
 screen1 = canv.create_text(400, 300, text='', font='28')
 g1 = Gun()
 bullet = 0
 balls = []
-t1 = Target()
+targets = []
+
+scoreboard = Scoreboard()
 
 def new_game():
     global screen1, balls, bullet
+    canv.itemconfig(screen1, text='')
     bullet = 0
     balls = []
-    t1.new_target()
+    targets = []
+    targets_lives = 0
+    for i in range(target_number):
+        new_target = Target()
+        targets.append(new_target)
+        targets_lives += targets[i].live
     canv.bind('<Button-1>', g1.fire2_start)
     canv.bind('<ButtonRelease-1>', g1.fire2_end)
     canv.bind('<Motion>', g1.targeting)
-    t1.live = 1
-    while t1.live or balls:
+
+    while targets_lives or balls:
         to_del = []
         for i, b in enumerate(balls):
             b.move()
-            if b.hittest(t1) and t1.live:
-                t1.live = 0
-                t1.hit()
-                canv.bind('<Button-1>', '')
-                canv.bind('<ButtonRelease-1>', '')
-                canv.itemconfig(screen1, text='Вы уничтожили цель за ' + str(bullet) + ' выстрелов')
+            for j in range(target_number):
+                if b.hittest(targets[j]) and targets[j].live:
+                    targets_lives -= targets[j].live
+                    targets[j].live = 0
+                    targets[j].hit()
             if b.live < 0:
                 to_del.append(i)
                 canv.delete(b.id)
         for i in range(len(to_del) - 1, -1, -1):
             del balls[to_del[i]]
-
         canv.update()
         time.sleep(0.03)
         g1.targeting()
         g1.power_up()
-
-    canv.itemconfig(screen1, text='')
+    scoreboard.update_score(3)
+    canv.bind('<Button-1>', '')
+    canv.bind('<ButtonRelease-1>', '')
+    canv.itemconfig(screen1, text='Вы уничтожили цель за ' + str(bullet) + ' выстрелов')
     canv.delete(g1)
-    root.after(750, new_game)
+    root.after(1500, new_game)
 
 
 new_game()
