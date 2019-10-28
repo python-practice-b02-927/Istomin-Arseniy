@@ -10,10 +10,10 @@ fr = tk.Frame(root)
 root.geometry('800x600')
 canv = tk.Canvas(root, bg='white')
 canv.pack(fill=tk.BOTH, expand=1)
-g = 1
+g = 1.5
 k = 0.5
 u = 0.9
-
+score = 0
 
 # k, u - коэффициенты трения
 
@@ -57,7 +57,6 @@ class Ball:
         self.x и self.y с учетом скоростей self.vx и self.vy, силы гравитации, действующей на мяч,
         и стен по краям окна (размер окна 800х600).
         """
-        # FIXME
         print(self.live)
         if self.vy < 5 and self.y >= 600 - self.r:
             self.in_air = False
@@ -188,6 +187,10 @@ class Target:
         self.points += points
         canv.itemconfig(self.id_points, text=self.points)
 
+
+class Scoreboard:
+    def update_score(target, point=1):
+        pass
 
 screen1 = canv.create_text(400, 300, text='', font='28')
 g1 = Gun()
