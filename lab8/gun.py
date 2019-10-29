@@ -2,17 +2,20 @@ from random import randrange as rnd, choice, uniform
 import tkinter as tk
 import math
 import time
-# print (dir(math))
+import const
 
+# print (dir(math))
+g = const.g
+u = const.u
+k = const.k
 root = tk.Tk()
 fr = tk.Frame(root)
 root.geometry('800x600')
 canv = tk.Canvas(root, bg='white')
 canv.pack(fill=tk.BOTH, expand=1)
-g = 1.5
-k = 0.5
-u = 0.9
 target_number = 2
+
+
 # k, u - коэффициенты трения
 
 class Ball:
@@ -66,7 +69,6 @@ class Ball:
             self.vx *= u
             self.live -= 1
         self.set_coords()
-
 
     def collision(self):
         if self.x > 800 - self.r:
@@ -131,14 +133,12 @@ class Gun:
         self.f2_on = 0
         self.f2_power = 10
 
-    def targeting(self, event=0):
+    def targeting(self, event):
         """Прицеливание. Зависит от положения мыши."""
         if event:
             self.angle = math.atan((event.y - 450) / (event.x - 20))
-        if self.f2_on:
-            canv.itemconfig(self.id, fill='orange')
-        else:
-            canv.itemconfig(self.id, fill='black')
+
+    def extension(self):
         canv.coords(self.id, 20, 450,
                     20 + max(self.f2_power, 20) * math.cos(self.angle),
                     450 + max(self.f2_power, 20) * math.sin(self.angle)
@@ -160,7 +160,7 @@ class Target:
         self.vy = rnd(-1, 1)
         self.live = 1
         self.id = canv.create_oval(0, 0, 0, 0)
-        y = self.y = rnd(300, 550)
+        y = self.y = rnd(350, 500)
         x = self.x = rnd(600, 780)
         r = self.r = rnd(2, 50)
         color = self.color = 'red'
@@ -177,7 +177,6 @@ class Target:
             self.y = 549 + self.r
             self.vy = -self.vy
 
-
     def hit(self, points=1):
         """Попадание шарика в цель."""
         canv.coords(self.id, -10, -10, -10, -10)
@@ -187,9 +186,11 @@ class Scoreboard:
     def __init__(self):
         self.score = 0
         self.id_points = canv.create_text(30, 30, text=self.score, font='28')
+
     def update_score(self, point=1):
         self.score += point
         canv.itemconfig(self.id_points, text=self.score)
+
 
 screen1 = canv.create_text(400, 300, text='', font='28')
 g1 = Gun()
@@ -198,6 +199,7 @@ balls = []
 targets = []
 
 scoreboard = Scoreboard()
+
 
 def new_game():
     global screen1, balls, bullet
@@ -232,9 +234,9 @@ def new_game():
             del balls[to_del[i]]
         canv.update()
         time.sleep(0.03)
-        g1.targeting()
+        g1.extension()
         g1.power_up()
-    scoreboard.update_score(3)
+    scoreboard.update_score(target_number)
     canv.bind('<Button-1>', '')
     canv.bind('<ButtonRelease-1>', '')
     canv.itemconfig(screen1, text='Вы уничтожили цель за ' + str(bullet) + ' выстрелов')
