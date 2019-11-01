@@ -28,7 +28,7 @@ class Ball:
         """
         self.x = x
         self.y = y
-        self.r = 10
+        self.r = 15
         self.vx = 0
         self.vy = 0
         self.color = choice(['blue', 'green', 'red', 'brown'])
@@ -112,6 +112,8 @@ class Gun:
         self.f2_on = 0
         self.angle = 1
         self.id = canv.create_line(20, 450, 50, 420, width=7)
+        self.x = 20
+        self.y = 450
 
     def fire2_start(self, event):
         self.f2_on = 1
@@ -125,7 +127,6 @@ class Gun:
         global balls, bullet
         bullet += 1
         new_ball = Ball()
-        new_ball.r += 5
         self.angle = math.atan((event.y - new_ball.y) / (event.x - new_ball.x))
         new_ball.vx = self.f2_power * math.cos(self.angle)
         new_ball.vy = self.f2_power * math.sin(self.angle)
@@ -139,9 +140,9 @@ class Gun:
             self.angle = math.atan((event.y - 450) / (event.x - 20))
 
     def extension(self):
-        canv.coords(self.id, 20, 450,
-                    20 + max(self.f2_power, 20) * math.cos(self.angle),
-                    450 + max(self.f2_power, 20) * math.sin(self.angle)
+        canv.coords(self.id, self.x, 450,
+                    self.x + max(self.f2_power, 20) * math.cos(self.angle),
+                    self.y + max(self.f2_power, 20) * math.sin(self.angle)
                     )
 
     def power_up(self):
