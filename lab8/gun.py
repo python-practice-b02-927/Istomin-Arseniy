@@ -14,7 +14,7 @@ root.geometry('800x600')
 canv = tk.Canvas(root, bg='white')
 canv.pack(fill=tk.BOTH, expand=1)
 target_number = 2
-
+dt = 0.03
 
 # k, u - коэффициенты трения
 
@@ -111,9 +111,9 @@ class Gun:
         self.f2_power = 10
         self.f2_on = 0
         self.angle = 1
-        self.id = canv.create_line(20, 450, 50, 420, width=7)
         self.x = 200
         self.y = 450
+        self.id = canv.create_line(self.x, self.y, self.x+30, self.y-30, width=7)
 
     def fire2_start(self, event):
         self.f2_on = 1
@@ -152,8 +152,12 @@ class Gun:
             canv.itemconfig(self.id, fill='orange')
         else:
             canv.itemconfig(self.id, fill='black')
-    def move(self):
-        pass
+
+    def move_up(self, event):
+        self.y -= 1
+
+    def move_down(self, event):
+        self.y += 1
 
 class Target:
     def __init__(self):
@@ -214,10 +218,12 @@ def new_game():
         new_target = Target()
         targets.append(new_target)
         targets_lives += targets[i].live
+
     canv.bind('<Button-1>', g1.fire2_start)
     canv.bind('<ButtonRelease-1>', g1.fire2_end)
     canv.bind('<Motion>', g1.targeting)
-
+    root.bind('<Up>', g1.move_up)
+    root.bind('<Down>', g1.move_down)
     while targets_lives or balls:
         to_del = []
         for j in range(target_number):
@@ -235,7 +241,7 @@ def new_game():
         for i in range(len(to_del) - 1, -1, -1):
             del balls[to_del[i]]
         canv.update()
-        time.sleep(0.03)
+        time.sleep(dt)
         g1.extension()
         g1.power_up()
     scoreboard.update_score(target_number)
