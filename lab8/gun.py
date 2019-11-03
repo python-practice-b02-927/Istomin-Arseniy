@@ -112,7 +112,7 @@ class Gun:
         self.f2_on = 0
         self.angle = 1
         self.id = canv.create_line(20, 450, 50, 420, width=7)
-        self.x = 20
+        self.x = 200
         self.y = 450
 
     def fire2_start(self, event):
@@ -126,8 +126,8 @@ class Gun:
         """
         global balls, bullet
         bullet += 1
-        new_ball = Ball()
-        self.angle = math.atan((event.y - new_ball.y) / (event.x - new_ball.x))
+        new_ball = Ball(self.x, self.y)
+        self.angle = math.atan2((event.y - new_ball.y), (event.x - new_ball.x))
         new_ball.vx = self.f2_power * math.cos(self.angle)
         new_ball.vy = self.f2_power * math.sin(self.angle)
         balls += [new_ball]
@@ -137,10 +137,10 @@ class Gun:
     def targeting(self, event):
         """Прицеливание. Зависит от положения мыши."""
         if event:
-            self.angle = math.atan((event.y - 450) / (event.x - 20))
+            self.angle = math.atan2((event.y - self.y), (event.x - self.x))
 
     def extension(self):
-        canv.coords(self.id, self.x, 450,
+        canv.coords(self.id, self.x, self.y,
                     self.x + max(self.f2_power, 20) * math.cos(self.angle),
                     self.y + max(self.f2_power, 20) * math.sin(self.angle)
                     )
@@ -152,7 +152,8 @@ class Gun:
             canv.itemconfig(self.id, fill='orange')
         else:
             canv.itemconfig(self.id, fill='black')
-
+    def move(self):
+        pass
 
 class Target:
     def __init__(self):
