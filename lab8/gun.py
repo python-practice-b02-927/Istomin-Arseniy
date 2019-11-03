@@ -14,7 +14,6 @@ root.geometry('800x600')
 canv = tk.Canvas(root, bg='white')
 canv.pack(fill=tk.BOTH, expand=1)
 target_number = 2
-dt = 0.03
 
 # k, u - коэффициенты трения
 
@@ -58,7 +57,7 @@ class Ball:
         self.x и self.y с учетом скоростей self.vx и self.vy, силы гравитации, действующей на мяч,
         и стен по краям окна (размер окна 800х600).
         """
-        if self.vy < 5 and self.y >= 600 - self.r:
+        if self.vy < 7 and self.y >= 600 - self.r:
             self.in_air = False
         self.collision()
         self.x += self.vx
@@ -111,7 +110,7 @@ class Gun:
         self.f2_power = 10
         self.f2_on = 0
         self.angle = 1
-        self.x = 200
+        self.x = 20
         self.y = 450
         self.id = canv.create_line(self.x, self.y, self.x+30, self.y-30, width=7)
 
@@ -154,10 +153,20 @@ class Gun:
             canv.itemconfig(self.id, fill='black')
 
     def move_up(self, event):
-        self.y -= 1
+        if self.y > 10:
+            self.y -= 3
 
     def move_down(self, event):
-        self.y += 1
+        if self.y < 570:
+            self.y += 3
+
+    def move_right(self, event):
+        if self.x < 600:
+            self.x += 3
+
+    def move_left(self, event):
+        if self.x > 10:
+            self.x -= 3
 
 class Target:
     def __init__(self):
@@ -210,6 +219,8 @@ scoreboard = Scoreboard()
 def new_game():
     global screen1, balls, bullet
     canv.itemconfig(screen1, text='')
+    g1.x = 20
+    g1.y = 450
     bullet = 0
     balls = []
     targets = []
@@ -224,6 +235,8 @@ def new_game():
     canv.bind('<Motion>', g1.targeting)
     root.bind('<Up>', g1.move_up)
     root.bind('<Down>', g1.move_down)
+    root.bind('<Left>', g1.move_left)
+    root.bind('<Right>', g1.move_right)
     while targets_lives or balls:
         to_del = []
         for j in range(target_number):
@@ -241,7 +254,7 @@ def new_game():
         for i in range(len(to_del) - 1, -1, -1):
             del balls[to_del[i]]
         canv.update()
-        time.sleep(dt)
+        time.sleep(0.03)
         g1.extension()
         g1.power_up()
     scoreboard.update_score(target_number)
