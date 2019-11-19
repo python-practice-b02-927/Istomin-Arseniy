@@ -609,14 +609,6 @@ class MainFrame(tk.Frame):
         )
         self.left_score_label.pack(anchor='nw')
 
-        self.right_score = 0
-        self.score_tmpl = 'Score: {}'
-        self.right_score_label = tk.Label(
-            self,
-            text=self.score_tmpl.format(self.right_score),
-            font=("Times New Roman", 36)
-        )
-        self.right_score_label.pack(anchor='ne')
 
         self.battlefield = BattleField(self)
         self.battlefield.pack(fill=tk.BOTH, expand=1)
